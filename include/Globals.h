@@ -12,11 +12,7 @@ struct Globals
 };
 
 std::string Globals::logLevel{};
-
 int Globals::timeout{};
-
 bool Globals::isInstallEnabled{};
-
 bool Globals::isPackEnabled{};
-
 std::string Globals::buildConfig{};

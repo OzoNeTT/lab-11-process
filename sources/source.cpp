@@ -7,14 +7,39 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/log/trivial.hpp>
 #include "Globals.h"
-#include "Timer.h"
 #include "Parser.h"
 #include "Builder.h"
 #include <boost/log/sinks.hpp>
 #include <boost/log/utility/setup.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/unordered_map.hpp>
+#include <thread>
 
+void create(std::unique_ptr<ThreadData> &data)
+{
+    using namespace std::chrono;
+
+    if (Globals::timeout <= 0) {
+        return;
+    }
+
+    while (Globals::timeout > 0 && (!data || !data->isTerminated)) {
+        static const int DATA_TIMEOUT = 50;
+
+        std::this_thread::sleep_for(milliseconds{DATA_TIMEOUT});
+        Globals::timeout -= DATA_TIMEOUT;
+    }
+
+    data->isTerminated = true;
+
+    try {
+        data->currentProcess.terminate();
+    } catch (std::exception &exception) {
+        BOOST_LOG_TRIVIAL(error) << exception.what();
+    }
+
+    BOOST_LOG_TRIVIAL(info) << "Timeout";
+}
 
 void init()
 {
@@ -53,7 +78,7 @@ void init()
     boost::log::add_common_attributes();
 }
 
-void startProcess(const Command::ArgList &commandArgs, std::unique_ptr<ThreadData> &data)
+void startProcess(const std::list<std::string> &commandArgs, std::unique_ptr<ThreadData> &data)
 {
     using namespace boost::process;
 
@@ -109,7 +134,7 @@ int main(int argc, char *argv[])
 
     std::unique_ptr<ThreadData> data{nullptr};
 
-    auto timer = async::spawn(boost::bind(&Timer::create, std::ref(data)));
+    auto timer = async::spawn(boost::bind(&create, std::ref(data)));
 
     auto build = async::spawn(
         boost::bind(startProcess, Command::getConfig(), std::ref(data))
