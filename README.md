@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.com/OzoNeTT/lab-11-process.svg?branch=master)](https://travis-ci.com/OzoNeTT/lab-11-process)
+![GitHub Repo size](https://img.shields.io/github/repo-size/OzoNeTT/lab-11-process.svg)
+![Some badge](https://img.shields.io/badge/OzoNe-T__T-blue.svg)
+![forthebadge](https://forthebadge.com/images/badges/not-an-issue.svg)
+
 # Лабораторная работа 11
 
 > [Процесс](https://ru.wikipedia.org/wiki/Процесс_(информатика)) — программа, которая выполняется в текущий момент. Стандарт ISO 9000:2000 определяет процесс как совокупность взаимосвязанных и взаимодействующих действий, преобразующих входящие данные в исходящие.
